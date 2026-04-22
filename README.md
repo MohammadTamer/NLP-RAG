@@ -1,132 +1,373 @@
-# 📘 RAG Project Plan — Detailed Version
-
-## 1) Project Overview
-
-This project is a **Retrieval-Augmented Generation (RAG)** system built to answer questions from a collection of raw, unstructured documents.
-
-The main idea is simple:
-- ingest real documents,
-- extract and clean the text,
-- split the content into meaningful chunks,
-- convert the chunks into embeddings,
-- store them in a vector database,
-- retrieve the most relevant chunks for each query,
-- generate an answer using an LLM.
-
-The goal is to build a **complete working backend pipeline**, not just a notebook demo.
+# 📘 RAG Project Plan — Full Detailed Version
 
 ---
 
-## 2) Why This Project Is the Easiest Option
+## 🚀 1) Project Overview
 
-This project is easier than the Transformer research project because:
-- it relies more on **system design and integration** than deep model training,
-- most of the hard NLP parts are already available as tools or libraries,
-- you do not need to train a custom neural architecture from scratch,
-- you can focus on engineering, retrieval, and deployment.
+This project is a **Retrieval-Augmented Generation (RAG)** system that answers user questions using unstructured documents.
 
-It is still a strong project because it matches the required rules:
-- use raw, messy documents,
-- process the data yourself,
-- justify chunking,
-- build a FastAPI backend,
-- containerize everything with Docker,
-- evaluate retrieval quality and failure cases. :contentReference[oaicite:1]{index=1}
+### 🔄 System Workflow:
+1. 📥 Ingest raw PDF files  
+2. 🧹 Extract and clean text  
+3. ✂️ Split text into chunks  
+4. 🔢 Convert chunks into embeddings  
+5. 🗄️ Store in vector database  
+6. 🔍 Retrieve relevant chunks  
+7. 🤖 Generate answers using LLM  
 
----
-
-## 3) Recommended Project Topic
-
-Choose **one domain only** so the project stays clean and manageable.
-
-Good examples:
-- university regulations and student handbook,
-- HR policies,
-- company internal policies,
-- product manuals,
-- legal or administrative manuals.
-
-Best choice for simplicity:
-**University handbook / regulations PDF documents**
-
-Why?
-- the content is structured enough to retrieve from,
-- the documents are easy to gather,
-- the language is clear,
-- the data is still “raw” and unstructured enough to satisfy the assignment.
+🎯 **Goal:** Build a complete backend system (not just a notebook)
 
 ---
 
-## 4) What the Final System Will Do
+## 💡 2) Why This Project
 
-The final system should:
-1. accept raw PDF documents,
-2. extract and clean the text,
-3. split the text into chunks,
-4. store chunks with metadata in a vector database,
-5. receive a user question,
-6. retrieve relevant chunks,
-7. send those chunks to an LLM,
-8. return the final answer through an API.
+- ✅ Easier than building a custom Transformer  
+- 🧠 Focuses on engineering instead of deep ML  
+- 🌍 Uses real-world data  
+- 📋 Matches assignment requirements  
 
 ---
 
-## 5) Suggested Tech Stack
+## 📂 3) Project Idea
 
-### Data Processing
-- PyMuPDF (`fitz`)
-- pdfplumber
-- regex for cleaning
-- pandas for metadata handling if needed
+Use **PDF documents in ONE domain**:
 
-### Embeddings
-- `sentence-transformers`
-- a lightweight sentence embedding model
-
-### Vector Database
-- ChromaDB
-- or FAISS if you want a very simple local setup
-
-### Backend
-- FastAPI
-- Pydantic models
-- Uvicorn
-
-### Deployment
-- Docker
-- docker-compose
-
-### LLM
-- Ollama local model
-- or an API-based model if allowed
+- 🎓 University regulations ✅ (Best choice)
+- 🏢 HR policies  
+- 📘 Company manuals  
+- 📦 Product documentation  
 
 ---
 
-## 6) Project Folder Structure
+## ⚙️ 4) System Capabilities
+
+The system should:
+
+- 📥 Ingest raw PDFs  
+- 🧹 Process messy text  
+- 🧠 Store embeddings  
+- 🔍 Retrieve relevant context  
+- 🤖 Answer questions via API  
+
+---
+
+## 🧰 5) Tech Stack
+
+### 🧹 Data Processing
+- PyMuPDF / pdfplumber  
+- regex cleaning  
+
+### 🧠 Embeddings
+- sentence-transformers  
+
+### 🗄️ Vector DB
+- ChromaDB / FAISS  
+
+### 🌐 Backend
+- FastAPI  
+
+### 🐳 Deployment
+- Docker + docker-compose  
+
+### 🤖 LLM
+- Ollama or API  
+
+---
+
+## 🗂️ 6) Project Structure
 
 ```bash
 project/
 ├── app/
 │   ├── main.py
 │   ├── routers/
-│   │   ├── ingest.py
-│   │   └── query.py
 │   ├── services/
-│   │   ├── parser_service.py
-│   │   ├── chunking_service.py
-│   │   ├── embedding_service.py
-│   │   ├── retrieval_service.py
-│   │   └── generation_service.py
 │   ├── models/
-│   │   └── schemas.py
 │   └── utils/
-│       └── text_cleaning.py
 ├── data/
-│   ├── raw/
-│   └── processed/
 ├── vectordb/
-├── tests/
 ├── Dockerfile
 ├── docker-compose.yml
 ├── requirements.txt
 └── README.md
+
+# 📊 7) Data Collection Plan
+
+## 📥 Input Data
+
+* Collect **5 → 10 PDF files** in the same domain
+
+## 📌 Requirements
+
+* Raw PDFs
+* Not pre-cleaned
+* Not CSV files
+* Multi-page documents
+
+## 🏷️ Metadata to Store
+
+* file name
+* page number
+* chunk ID
+* document title
+
+---
+
+# 🧼 8) Data Extraction & Cleaning
+
+## 🔄 Steps
+
+1. Extract text page by page
+2. Remove spacing issues
+3. Normalize whitespace
+4. Remove noise
+5. Preserve structure
+
+## 🧪 Cleaning Examples
+
+* Remove extra spaces
+* Fix line breaks
+* Remove repeated headers
+* Keep paragraphs
+
+## 🎯 Importance
+
+✨ Better cleaning = Better retrieval = Better answers
+
+---
+
+# ✂️ 9) Chunking Strategy
+
+## ⚙️ Settings
+
+* Chunk size: **400–500 tokens**
+* Overlap: **50 tokens**
+
+## 🤔 Why?
+
+* Small chunks → lose context ❌
+* Large chunks → add noise ❌
+* Overlap → preserves meaning ✅
+
+## 🚀 Improvement
+
+Use **sentence-based chunking** instead of random splitting
+
+---
+
+# 🔢 10) Embedding & Vectorization
+
+## 🔄 What Happens
+
+Each chunk → vector representation
+
+## 🧰 Tools
+
+* sentence-transformers
+
+## 💾 Stored Data
+
+* embedding
+* text
+* metadata
+
+## 🎯 Benefit
+
+✨ Semantic search instead of keyword matching
+
+---
+
+# 🔍 11) Retrieval Pipeline
+
+## 🔄 Flow
+
+1. User sends question
+2. Convert to embedding
+3. Search vector DB
+4. Get top-k chunks
+5. Send to LLM
+6. Generate answer
+
+## ⚙️ Recommended
+
+* `top_k = 3 or 5`
+
+---
+
+# 🌐 12) FastAPI Backend Design
+
+## 📥 POST /ingest
+
+Process documents and store embeddings
+
+```json
+{
+  "message": "Documents ingested successfully",
+  "files_processed": 5,
+  "chunks_created": 48
+}
+```
+
+---
+
+## ❓ POST /query
+
+```json
+{
+  "question": "What is the attendance policy?"
+}
+```
+
+## 📤 Response
+
+```json
+{
+  "question": "What is the attendance policy?",
+  "answer": "...",
+  "sources": [
+    {
+      "file_name": "handbook.pdf",
+      "page": 12,
+      "chunk_id": "chunk_14"
+    }
+  ]
+}
+```
+
+---
+
+## ❤️ GET /health
+
+Check API status
+
+---
+
+# 🐳 13) Docker & Deployment
+
+## 📦 Required
+
+* Dockerfile
+* docker-compose.yml
+
+## ▶️ Run Command
+
+```bash
+docker-compose up
+```
+
+## 🧩 Services
+
+* FastAPI
+* Vector DB
+
+---
+
+# 📈 14) Evaluation Plan
+
+## ✅ Successful Cases
+
+* Attendance policy
+* Graduation requirements
+* Deadlines
+
+## ❌ Failure Cases
+
+* Wrong chunk retrieved
+* Hallucination
+* Vague question
+* Missing context
+
+## 🔍 Analysis
+
+Explain:
+
+* What failed
+* Why
+* How to fix
+
+---
+
+# 📄 15) Technical Report
+
+## 🧾 Sections
+
+* Executive Summary
+* Problem Statement
+* Data Source
+* Cleaning
+* Chunking
+* Embeddings
+* Vector DB
+* API
+* Docker
+* Evaluation
+* Errors
+* Conclusion
+
+---
+
+# ⚠️ 16) What to Avoid
+
+* ❌ Scanned PDFs
+* ❌ Too much data
+* ❌ Over-engineering
+* ❌ Bonus features early
+
+---
+
+# ⏳ 17) Timeline
+
+## 📅 Day 1
+
+* Choose topic
+* Collect data
+
+## 📅 Day 2
+
+* Extraction + cleaning
+
+## 📅 Day 3
+
+* Chunking + embeddings
+
+## 📅 Day 4
+
+* FastAPI
+
+## 📅 Day 5
+
+* Connect LLM
+
+## 📅 Day 6
+
+* Evaluation
+
+## 📅 Day 7
+
+* Docker + final report
+
+---
+
+# 🎯 18) Final Goal
+
+Build a system that:
+
+* 📥 Processes PDFs
+* 🔍 Retrieves knowledge
+* 🤖 Answers questions
+* 🐳 Runs with Docker
+* 🌐 Exposes API
+
+---
+
+# 💬 19) Final Advice
+
+✨ Keep it simple.
+
+## 🧠 Best Strategy:
+
+* One domain
+* Few PDFs
+* Clean pipeline
+* Working API
+* Clear evaluation
