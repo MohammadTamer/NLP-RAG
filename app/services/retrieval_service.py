@@ -1,0 +1,22 @@
+from sentence_transformers import SentenceTransformer
+from app.services.vector_db_service import client, COLLECTION_NAME
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+def retrieve_chunks(query: str, top_k=3):
+    query_vector = model.encode(query).tolist()
+
+    results = client.search(
+        collection_name=COLLECTION_NAME,
+        query_vector=query_vector,
+        limit=top_k
+    )
+
+    return [
+        {
+            "text": r.payload["text"],
+            "filename": r.payload["filename"],
+            "score": r.score
+        }
+        for r in results
+    ]
