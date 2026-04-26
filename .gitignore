@@ -1,6 +1,25 @@
+# Env
 .env
+.venv
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
+
+# Data
 data/uploads/
+
+# Vector DB
 vectordb/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
