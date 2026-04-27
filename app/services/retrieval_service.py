@@ -5,12 +5,11 @@ model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def retrieve_chunks(query: str, top_k=3):
     query_vector = model.encode(query).tolist()
-
-    results = client.search(
+    results = client.query_points(
         collection_name=COLLECTION_NAME,
-        query_vector=query_vector,
+        query=query_vector,
         limit=top_k
-    )
+    ).points
 
     return [
         {

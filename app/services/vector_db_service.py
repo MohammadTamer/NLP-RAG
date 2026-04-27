@@ -34,7 +34,6 @@ def store_chunks(chunks, embeddings, filename):
                 }
             )
         )
-
     client.upsert(
         collection_name=COLLECTION_NAME,
         points=points

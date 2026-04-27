@@ -82,7 +82,7 @@ project/
 │   ├── main.py
 │   ├── routers/
 │   ├── services/
-│   ├── models/
+│   ├── schemas/
 │   └── utils/
 ├── data/
 ├── vectordb/

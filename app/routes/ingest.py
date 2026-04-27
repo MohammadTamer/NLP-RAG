@@ -2,18 +2,20 @@ from fastapi import APIRouter, UploadFile, File
 import os
 
 from app.services.file_service import extract_text_from_pdf
-from app.utils.cleaning import clean_text
+from app.services.cleaning import clean_text
 from app.services.chunking_service import chunk_text
 from app.services.embedding_service import get_embeddings
-from app.services.vector_db_service import create_collection, store_chunks
+from app.services.vector_db_service import store_chunks
+
+from app.schemas.ingest_schema import IngestResponse
 
 router = APIRouter()
 
-UPLOAD_DIR = "data/uploads"
+UPLOAD_DIR = "uploads/"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
-@router.post("/ingest")
+@router.post("/ingest", response_model=IngestResponse)
 async def ingest(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
 
@@ -27,8 +29,8 @@ async def ingest(file: UploadFile = File(...)):
 
     store_chunks(chunks, embeddings, file.filename)
 
-    return {
-        "message": "file processed and stored successfully",
-        "filename": file.filename,
-        "chunks_count": len(chunks),
-    }
+    return IngestResponse(
+        message="file processed and stored successfully",
+        filename=file.filename,
+        chunks_count=len(chunks)
+    )
