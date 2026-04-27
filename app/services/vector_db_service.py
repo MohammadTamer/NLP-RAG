@@ -1,7 +1,10 @@
+import os
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 
-client = QdrantClient(host="localhost", port=6333)
+QDRANT_HOST = os.getenv("QDRANT_HOST", "localhost")
+QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
+client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 COLLECTION_NAME = "rag_chunks"
 
 
@@ -38,3 +41,7 @@ def store_chunks(chunks, embeddings, filename):
         collection_name=COLLECTION_NAME,
         points=points
     )
+
+
+def delete_collection():
+    client.delete_collection(collection_name=COLLECTION_NAME)
