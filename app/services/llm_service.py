@@ -24,25 +24,6 @@ class OllamaProvider(LLMProvider):
         )
         return response["message"]["content"]
 
-class OpenAIProvider(LLMProvider):
-    def __init__(self):
-        import openai
-        self.api_key = os.getenv("OPENAI_API_KEY")
-        if not self.api_key:
-            raise ValueError("OPENAI_API_KEY is not set in environment variables.")
-        self.client = openai.OpenAI(api_key=self.api_key)
-        self.model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
-
-    def generate(self, prompt: str, system_message: str) -> str:
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=[
-                {"role": "system", "content": system_message},
-                {"role": "user", "content": prompt}
-            ]
-        )
-        return response.choices[0].message.content
-
 class GeminiProvider(LLMProvider):
     def __init__(self):
         import google.generativeai as genai
@@ -67,8 +48,6 @@ class LLMFactory:
             
         if provider_name == "ollama":
             return OllamaProvider()
-        elif provider_name == "openai":
-            return OpenAIProvider()
         elif provider_name == "gemini":
             return GeminiProvider()
         else:
