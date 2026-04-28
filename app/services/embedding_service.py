@@ -1,6 +1,6 @@
 from sentence_transformers import SentenceTransformer
 
-model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def get_embeddings(chunks):
     embeddings = model.encode(chunks)

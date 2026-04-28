@@ -6,33 +6,35 @@ OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
 
 client = ollama.Client(host=OLLAMA_HOST)
 
-def generate_answer(question: str, contexts: list):
+def generate_answer(question: str, contexts: list, model_name: str):
     context_text = "\n".join(contexts)
-
+    model = model_name or MODEL_NAME
     prompt = f"""
-    أنت مساعد ذكي متخصص في شرح النصوص القانونية.
+    You are an AI assistant specialized in answering questions based on provided documents.
 
-    تعليمات:
-    - أجب باللغة العربية الفصحى.
-    - اعتمد على المعلومات المقدمة.
-    - يمكنك إعادة صياغة المعلومات وشرحها بشكل واضح.
-    - لا تخترع معلومات غير موجودة.
-    - إذا لم تجد الإجابة بوضوح، قل: "لا توجد معلومات كافية."
+    Instructions:
+    - Use ONLY the provided context
+    - If the answer is not in the context, say: "I don't know"
+    - Be clear and concise
+    - Do not hallucinate
 
-    السؤال:
-    {question}
-
-    المعلومات:
+    Context:
     {context_text}
 
-    الإجابة:
+    Question:
+    {question}
+
+    Answer:
     """
+    try:
+        response = client.chat(
+            model=model,
+            messages=[
+                {"role": "system", "content": "أجب دائمًا باللغة العربية الفصحى."},
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response["message"]["content"]
 
-    response = client.chat(
-        model=MODEL_NAME,
-        messages=[
-            {"role": "user", "content": prompt}
-        ]
-    )
-
-    return response["message"]["content"]
+    except Exception as e:
+        return f"حدث خطأ أثناء توليد الإجابة: {str(e)}"

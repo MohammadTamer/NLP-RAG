@@ -14,7 +14,7 @@ def query(request: QueryRequest):
     for r in retrieved:
         contexts.append(r["text"])
 
-    answer = generate_answer(request.question, contexts)
+    answer = generate_answer(request.question, contexts, model_name=request.model)
 
     sources = []
 

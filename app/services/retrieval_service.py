@@ -1,7 +1,7 @@
 from sentence_transformers import SentenceTransformer
 from app.services.vector_db_service import client, COLLECTION_NAME
 
-model = SentenceTransformer("sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
+model = SentenceTransformer("all-MiniLM-L6-v2")
 
 def retrieve_chunks(query: str, top_k=5):
     query_vector = model.encode(query).tolist()
