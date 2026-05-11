@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import ollama
 
 MODEL_NAME = os.getenv("OLLAMA_MODEL", "llama3")
-OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
 
 client = ollama.Client(host=OLLAMA_HOST)
 
@@ -17,7 +17,7 @@ class LLMProvider(ABC):
 class OllamaProvider(LLMProvider):
     def __init__(self):
         import ollama
-        self.host = os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+        self.host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
         self.model = os.getenv("OLLAMA_MODEL", "llama3")
         self.client = ollama.Client(host=self.host)
 
@@ -39,7 +39,7 @@ class GeminiProvider(LLMProvider):
         if not self.api_key:
             raise ValueError("GEMINI_API_KEY is not set in environment variables.")
         genai.configure(api_key=self.api_key)
-        self.model_name = os.getenv("GEMINI_MODEL", "gemini-1.5-pro")
+        self.model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-pro")
         self.model = genai.GenerativeModel(self.model_name)
         
     def generate(self, prompt: str, system_message: str) -> str:
@@ -90,13 +90,18 @@ Answer:
 """
 
     try:
+        if not provider_name and model_name and "gemini" in model_name.lower():
+            provider_name = "gemini"
+            
         provider = LLMFactory.get_provider(provider_name)
 
         if model_name:
-            if hasattr(provider, 'model'):
-                provider.model = model_name
-            elif hasattr(provider, 'model_name'):
+            if isinstance(provider, GeminiProvider):
+                import google.generativeai as genai
                 provider.model_name = model_name
+                provider.model = genai.GenerativeModel(model_name)
+            elif hasattr(provider, 'model'):
+                provider.model = model_name
 
         return provider.generate(
             prompt=prompt,

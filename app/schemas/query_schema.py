@@ -4,7 +4,8 @@ from typing import List, Optional
 
 class QueryRequest(BaseModel):
     question: str
-    model: Optional[str] = "llama3"
+    provider: Optional[str] = None  # "ollama", "gemini"
+    model: Optional[str] = None     # "llama3", "gemini-1.5-pro"
 
 class Source(BaseModel):
     text: str

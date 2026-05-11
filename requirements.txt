@@ -7,3 +7,4 @@ pymupdf
 ollama
 python-dotenv
 numpy
+google-generativeai
